@@ -4,32 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Keyboard Converter</title>
+<meta name="description" content="محول لوحة المفاتيح العربي ↔ الإنجليزي لتصحيح الكتابة الخاطئة وتحويل النصوص بسرعة وسهولة.">
+<meta name="keywords" content="محول كيبورد, keyboard converter, عربي انجليزي, اصلاح الكتابة, نصوص">
 
 <style>
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family: "Segoe UI", Tahoma, sans-serif;
+    font-family:"Segoe UI",Tahoma,sans-serif;
 }
 
 body{
     background:#0d0d0d;
-    color:#ffffff;
+    color:#fff;
     display:flex;
     justify-content:center;
     align-items:center;
-    height:100vh;
-    transition:0.3s;
+    min-height:100vh;
 }
 
 .container{
-    width:90%;
-    max-width:700px;
+    width:95%;
+    max-width:750px;
 }
 
 .card{
-    background:#111111;
+    background:#111;
     padding:30px;
     border-radius:20px;
     box-shadow:0 0 40px rgba(255,255,255,0.05);
@@ -39,27 +40,32 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:20px;
+    margin-bottom:15px;
 }
 
 h1{
-    font-weight:600;
-    letter-spacing:1px;
     font-size:20px;
 }
 
 .lang-toggle{
     background:#222;
-    color:#fff;
     border:1px solid #444;
+    color:#fff;
     padding:6px 12px;
     border-radius:8px;
     cursor:pointer;
 }
 
+#toolDescription{
+    margin-top:10px;
+    font-size:14px;
+    color:#ccc;
+    line-height:1.5;
+}
+
 textarea{
     width:100%;
-    height:140px;
+    height:150px;
     background:#000;
     border:1px solid #333;
     color:#fff;
@@ -67,12 +73,21 @@ textarea{
     border-radius:12px;
     font-size:16px;
     resize:none;
-    transition:0.3s;
 }
 
 textarea:focus{
     outline:none;
-    border-color:#ffffff;
+    border-color:#fff;
+}
+
+.output{
+    margin-top:20px;
+    background:#000;
+    padding:15px;
+    border-radius:12px;
+    border:1px solid #333;
+    min-height:80px;
+    word-wrap:break-word;
 }
 
 .buttons{
@@ -86,25 +101,14 @@ button{
     padding:12px;
     border:none;
     border-radius:12px;
-    background:#ffffff;
+    background:#fff;
     color:#000;
     font-weight:600;
     cursor:pointer;
-    transition:0.3s;
 }
 
 button:hover{
     background:#d9d9d9;
-}
-
-.output{
-    margin-top:20px;
-    background:#000;
-    padding:15px;
-    border-radius:12px;
-    border:1px solid #333;
-    min-height:80px;
-    word-wrap:break-word;
 }
 
 .copy-btn{
@@ -117,6 +121,13 @@ button:hover{
 .copy-btn:hover{
     background:#333;
 }
+
+.footer{
+    text-align:center;
+    margin-top:20px;
+    font-size:13px;
+    opacity:0.7;
+}
 </style>
 </head>
 <body>
@@ -126,10 +137,15 @@ button:hover{
 
 <div class="top-bar">
     <h1 id="title">🔁 محول الكيبورد</h1>
-    <button class="lang-toggle" onclick="toggleLanguage()">English</button>
+    <button class="lang-toggle" onclick="toggleLanguage()" id="langToggle">English</button>
 </div>
 
-<textarea id="inputText" placeholder="اكتب النص هنا..."></textarea>
+<!-- وصف الأداة -->
+<p id="toolDescription">
+اكتب نصك هنا وسيقوم المحول بتحويل الكتابة بين لوحة المفاتيح العربية والإنجليزية بسرعة ودقة. يمكنك تصحيح الكتابة الخاطئة أو تحويل النصوص بين اللغتين بسهولة.
+</p>
+
+<textarea id="inputText" placeholder="اكتب النص هنا..." oninput="autoConvert()"></textarea>
 
 <div class="buttons">
     <button id="toArabicBtn" onclick="convertToArabic()">إنجليزي ➜ عربي</button>
@@ -137,83 +153,115 @@ button:hover{
 </div>
 
 <div class="output" id="outputText"></div>
-<button class="copy-btn" id="copyBtn" onclick="copyText()">📋 نسخ النتيجة</button>
+
+<div class="buttons">
+    <button id="copyBtn" class="copy-btn" onclick="copyText()">📋 نسخ النتيجة</button>
+</div>
+
+<div class="footer">
+    👁️ <span id="visitsText">عدد الزيارات:</span> <span id="visitor-count">...</span>
+</div>
 
 </div>
 </div>
 
 <script>
-let currentLang = "ar";
+let currentLang="ar";
 
-const translations = {
-    ar: {
-        title: "🔁 محول الكيبورد",
-        placeholder: "اكتب النص هنا...",
-        toArabic: "إنجليزي ➜ عربي",
-        toEnglish: "عربي ➜ إنجليزي",
-        copy: "📋 نسخ النتيجة",
-        toggle: "English",
-        dir: "rtl"
-    },
-    en: {
-        title: "🔁 Keyboard Converter",
-        placeholder: "Type your text here...",
-        toArabic: "English ➜ Arabic",
-        toEnglish: "Arabic ➜ English",
-        copy: "📋 Copy Result",
-        toggle: "العربية",
-        dir: "ltr"
-    }
+const translations={
+ar:{
+title:"🔁 محول الكيبورد",
+placeholder:"اكتب النص هنا...",
+toArabic:"إنجليزي ➜ عربي",
+toEnglish:"عربي ➜ إنجليزي",
+copy:"📋 نسخ النتيجة",
+toggle:"English",
+description:"اكتب نصك هنا وسيقوم المحول بتحويل الكتابة بين لوحة المفاتيح العربية والإنجليزية بسرعة ودقة. يمكنك تصحيح الكتابة الخاطئة أو تحويل النصوص بين اللغتين بسهولة.",
+visits:"عدد الزيارات:",
+dir:"rtl",
+lang:"ar"
+},
+en:{
+title:"🔁 Keyboard Converter",
+placeholder:"Type your text here...",
+toArabic:"English ➜ Arabic",
+toEnglish:"Arabic ➜ English",
+copy:"📋 Copy Result",
+toggle:"العربية",
+description:"Type your text and the converter will instantly switch between Arabic and English keyboard layouts. Quickly fix mistyped text or convert between languages with ease.",
+visits:"Visits:",
+dir:"ltr",
+lang:"en"
+}
 };
 
 function toggleLanguage(){
-    currentLang = currentLang === "ar" ? "en" : "ar";
-    const t = translations[currentLang];
+currentLang=currentLang==="ar"?"en":"ar";
+const t=translations[currentLang];
 
-    document.getElementById("title").innerText = t.title;
-    document.getElementById("inputText").placeholder = t.placeholder;
-    document.getElementById("toArabicBtn").innerText = t.toArabic;
-    document.getElementById("toEnglishBtn").innerText = t.toEnglish;
-    document.getElementById("copyBtn").innerText = t.copy;
-    document.querySelector(".lang-toggle").innerText = t.toggle;
+document.getElementById("title").innerText=t.title;
+document.getElementById("inputText").placeholder=t.placeholder;
+document.getElementById("toArabicBtn").innerText=t.toArabic;
+document.getElementById("toEnglishBtn").innerText=t.toEnglish;
+document.getElementById("copyBtn").innerText=t.copy;
+document.getElementById("toolDescription").innerText=t.description;
+document.getElementById("visitsText").innerText=t.visits;
+document.getElementById("langToggle").innerText=t.toggle;
 
-    document.documentElement.lang = currentLang;
-    document.documentElement.dir = t.dir;
+document.documentElement.lang=t.lang;
+document.documentElement.dir=t.dir;
 }
 
-const enToAr = {
+/* تحويل */
+const enToAr={
 'q':'ض','w':'ص','e':'ث','r':'ق','t':'ف','y':'غ','u':'ع','i':'ه','o':'خ','p':'ح','[':'ج',']':'د',
 'a':'ش','s':'س','d':'ي','f':'ب','g':'ل','h':'ا','j':'ت','k':'ن','l':'م',';':'ك',"'":'ط',
 'z':'ئ','x':'ء','c':'ؤ','v':'ر','b':'لا','n':'ى','m':'ة',',':'و','.':'ز','/':'ظ'
 };
 
-const arToEn = {};
-for (let key in enToAr) {
-    arToEn[enToAr[key]] = key;
+const arToEn={};
+for(let key in enToAr){
+arToEn[enToAr[key]]=key;
+}
+
+function convert(text,map){
+let result="";
+for(let char of text){
+result+=map[char]||map[char.toLowerCase()]||char;
+}
+return result;
 }
 
 function convertToArabic(){
-    let text = document.getElementById("inputText").value;
-    let result = "";
-    for (let char of text){
-        result += enToAr[char] || enToAr[char.toLowerCase()] || char;
-    }
-    document.getElementById("outputText").innerText = result;
+let text=inputText.value;
+outputText.innerText=convert(text,enToAr);
 }
 
 function convertToEnglish(){
-    let text = document.getElementById("inputText").value;
-    let result = "";
-    for (let char of text){
-        result += arToEn[char] || char;
-    }
-    document.getElementById("outputText").innerText = result;
+let text=inputText.value;
+outputText.innerText=convert(text,arToEn);
+}
+
+function autoConvert(){
+let text=inputText.value;
+let arabic=/[\u0600-\u06FF]/;
+if(arabic.test(text)){
+outputText.innerText=convert(text,arToEn);
+}else{
+outputText.innerText=convert(text,enToAr);
+}
 }
 
 function copyText(){
-    let text = document.getElementById("outputText").innerText;
-    navigator.clipboard.writeText(text);
+navigator.clipboard.writeText(outputText.innerText);
 }
+
+/* عداد الزيارات */
+fetch("https://api.countapi.xyz/hit/keyboard-converter-global/visits")
+.then(res=>res.json())
+.then(res=>{
+document.getElementById("visitor-count").innerText=res.value;
+});
 </script>
 
 </body>
