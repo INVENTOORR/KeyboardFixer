@@ -254,12 +254,7 @@ function copyText(){
 navigator.clipboard.writeText(outputText.innerText);
 }
 
-/* عداد الزيارات */
-fetch("https://api.countapi.xyz/hit/keyboard-converter-global/visits")
-.then(res=>res.json())
-.then(res=>{
-document.getElementById("visitor-count").innerText=res.value;
-});
+ 
 </script>
 
 </body>
