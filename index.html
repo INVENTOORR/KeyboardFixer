@@ -74,120 +74,59 @@
 <div id="floatingAddBtn" onclick="alert('سيفتح نموذج إضافة منتج')">＋</div>
 
 <script type="module">
-import { createClient } from 'https://jspm.dev/@supabase/supabase-js'
+    import { createClient } from 'https://jspm.dev/@supabase/supabase-js'
+    const supabase = createClient('https://jgmebfsgdwipovwlrqkb.supabase.co', 'sb_publishable_iD-P4dJjZV32-vZldYMZig_VNV2kMHZ')
 
-const supabase = createClient(
-    'https://jgmebfsgdwipovwlrqkb.supabase.co',
-    'sb_publishable_iD-P4dJjZV32-vZldYMZig_VNV2kMHZ'
-);
+    window.openM = (id) => document.getElementById(id).style.display = 'flex';
+    window.closeM = (id) => document.getElementById(id).style.display = 'none';
 
-window.openM = (id) => document.getElementById(id).style.display = 'flex';
-window.closeM = (id) => document.getElementById(id).style.display = 'none';
-
-window.switchAuth = (mode) => {
-    const isReg = mode === 'reg';
-    document.getElementById('regFields').style.display = isReg ? 'block' : 'none';
-    document.getElementById('tabR').classList.toggle('active', isReg);
-    document.getElementById('tabL').classList.toggle('active', !isReg);
-};
-
-window.handleAuth = async () => {
-    const email = document.getElementById('authEmail').value.trim();
-    const pass = document.getElementById('authPass').value.trim();
-    const isReg = document.getElementById('regFields').style.display === 'block';
-
-    if (!email || !pass) {
-        alert("يرجى ملء البريد وكلمة المرور");
-        return;
+    window.switchAuth = (mode) => {
+        const isReg = mode === 'reg';
+        document.getElementById('regFields').style.display = isReg ? 'block' : 'none';
+        document.getElementById('tabR').classList.toggle('active', isReg);
+        document.getElementById('tabL').classList.toggle('active', !isReg);
     }
 
-    try {
+    window.handleAuth = async () => {
+        const email = document.getElementById('authEmail').value;
+        const pass = document.getElementById('authPass').value;
+        const isReg = document.getElementById('regFields').style.display === 'block';
 
-        if (isReg) {
-            const name = document.getElementById('regName').value.trim();
-            const role = document.getElementById('regRole').value;
+        if(!email || !pass) return alert("يرجى ملء كافة الخانات");
 
-            if (!name) {
-                alert("يرجى إدخال الاسم الكامل");
-                return;
+        try {
+            if(isReg) {
+                const name = document.getElementById('regName').value;
+                const role = document.getElementById('regRole').value;
+                const { data, error } = await supabase.auth.signUp({ email, password: pass });
+                if(error) throw error;
+                await supabase.from('profiles').insert([{ id: data.user.id, full_name: name, role: role }]);
+                alert("تم إنشاء الحساب بنجاح! يرجى تسجيل الدخول.");
+                switchAuth('login');
+            } else {
+                const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+                if(error) throw error;
+                alert("تم الدخول بنجاح!");
+                location.reload(); // تحديث الصفحة لتفعيل حالة المستخدم
             }
+        } catch (err) { alert("خطأ: " + err.message); }
+    }
 
-            const { data, error } = await supabase.auth.signUp({
-                email,
-                password: pass
-            });
-
-            if (error) throw error;
-
-            if (data.user) {
-                await supabase.from('profiles').insert([
-                    {
-                        id: data.user.id,
-                        full_name: name,
-                        role: role
-                    }
-                ]);
+    // التحقق من حالة المستخدم عند تحميل الصفحة
+    async function checkUser() {
+        const { data: { user } } = await supabase.auth.getUser();
+        if(user) {
+            document.getElementById('navActions').style.display = 'none';
+            document.getElementById('userProfile').style.display = 'block';
+            
+            // جلب بيانات البروفايل لمعرفة هل هو بائع
+            const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+            if(profile?.role === 'seller') {
+                document.getElementById('floatingAddBtn').style.display = 'flex';
             }
-
-            alert("تم إنشاء الحساب بنجاح ✅ تحقق من بريدك إذا كان التفعيل مطلوب.");
-            switchAuth('login');
-
-        } else {
-
-            const { error } = await supabase.auth.signInWithPassword({
-                email,
-                password: pass
-            });
-
-            if (error) throw error;
-
-            alert("تم تسجيل الدخول بنجاح 🎉");
-            closeM('authModal');
         }
-
-    } catch (err) {
-        alert("خطأ: " + err.message);
     }
-};
-
-
-/* تحديث الواجهة حسب حالة المستخدم */
-async function updateUI(user) {
-
-    if (!user) {
-        document.getElementById('navActions').style.display = 'block';
-        document.getElementById('userProfile').style.display = 'none';
-        document.getElementById('floatingAddBtn').style.display = 'none';
-        return;
-    }
-
-    document.getElementById('navActions').style.display = 'none';
-    document.getElementById('userProfile').style.display = 'block';
-
-    const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single();
-
-    if (profile?.role === 'seller') {
-        document.getElementById('floatingAddBtn').style.display = 'flex';
-    }
-}
-
-
-/* الاستماع لتغير حالة الدخول */
-supabase.auth.onAuthStateChange((event, session) => {
-    updateUI(session?.user || null);
-});
-
-
-/* عند تحميل الصفحة */
-(async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    updateUI(user);
-})();
+    checkUser();
 </script>
-
 </body>
 </html>
