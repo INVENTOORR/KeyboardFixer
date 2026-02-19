@@ -3,130 +3,376 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خيراتنا | النسخة المطورة</title>
+    <title>خيراتنا | المنصة المتكاملة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #27ae60; --accent: #f39c12; --bg: #f8fafc; --text: #1e293b; }
+        :root { 
+            --primary: #27ae60; --primary-light: #e8f5e9; --accent: #f39c12; 
+            --danger: #e74c3c; --bg: #f8fafc; --text: #1e293b;
+            --radius: 20px; --shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        body { background: var(--bg); padding-top: 90px; }
+        
+        /* حل مشكلة اختفاء الرأس: تباعد علوي كافٍ لجسم الصفحة */
+        body { background: var(--bg); color: var(--text); padding-top: 90px; min-height: 100vh; }
 
-        /* الهيدر الثابت */
+        /* --- Header (الرأس) - تم إصلاحه وتثبيته في الأعلى --- */
         header {
-            background: white; height: 80px; position: fixed; top: 0; width: 100%; 
-            z-index: 9999; display: flex; justify-content: space-between; align-items: center; 
-            padding: 0 5%; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: white;
+            height: 80px; position: fixed; top: 0; width: 100%; 
+            z-index: 9999; /* طبقة عليا جداً لضمان عدم الاختفاء */
+            display: flex; justify-content: space-between; align-items: center; padding: 0 5%;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            border-bottom: 1px solid #eee;
         }
-
-        /* نافذة الدخول المنظمة */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; }
+        .logo { font-size: 1.8rem; font-weight: 800; color: var(--primary); cursor: pointer; }
+        .nav-controls { display: flex; gap: 12px; align-items: center; }
         
-        .auth-tabs { display: flex; gap: 10px; margin-bottom: 20px; background: #f1f5f9; padding: 5px; border-radius: 12px; }
-        .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; border-radius: 10px; font-weight: bold; }
-        .tab.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .nav-btn { padding: 10px 18px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn-main { background: var(--primary); color: white; }
+        .btn-sec { background: var(--primary-light); color: var(--primary); }
 
-        input, select { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px; border: 2px solid #eee; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--primary); }
-        .btn-block { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem; }
-        
-        /* الزر العائم للبائع */
+        /* --- الزر العائم للبائع (Floating Button) --- */
         #floatingAddBtn {
-            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; 
-            background: var(--accent); color: white; border-radius: 50%; 
-            display: none; align-items: center; justify-content: center; font-size: 1.5rem;
-            cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 9000;
+            position: fixed; bottom: 30px; right: 30px; 
+            width: 65px; height: 65px; background: var(--accent); color: white;
+            border-radius: 50%; display: none; /* يظهر للبائعين فقط عبر JS */
+            align-items: center; justify-content: center; font-size: 2rem;
+            box-shadow: 0 5px 20px rgba(243, 156, 18, 0.4);
+            cursor: pointer; z-index: 8000; transition: 0.3s;
         }
+        #floatingAddBtn:hover { transform: scale(1.1); }
+
+        /* --- Grid & Cards --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; padding: 20px 5%; }
+        .card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: 0.3s; cursor: pointer; }
+        .card:hover { transform: translateY(-8px); }
+        .card-img { width: 100%; height: 200px; object-fit: cover; }
+        .card-content { padding: 15px; }
+
+        /* --- Modals & UI --- */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { background: white; padding: 30px; border-radius: 25px; width: 90%; max-width: 450px; position: relative; }
+        .close { position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 1.5rem; color: #999; }
+        
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #ddd; font-size: 1rem; }
+        .btn-block { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1.1rem; }
+        
+        .cart-panel { position: fixed; top: 0; left: -350px; width: 320px; height: 100%; background: white; z-index: 9999; padding: 25px; transition: 0.4s; box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
+        .cart-panel.active { left: 0; }
+
+        #welcomeOverlay { display: none; position: fixed; inset: 0; background: white; z-index: 20000; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 900; color: var(--primary); }
     </style>
 </head>
 <body>
 
+<div id="welcomeOverlay">حياكم الله في خيراتنا! 🌿</div>
+
 <header>
-    <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">خيراتنا 🌿</div>
-    <div id="navActions">
-        <button class="btn-block" style="padding: 8px 20px;" onclick="openM('authModal')">دخول / تسجيل</button>
-    </div>
-    <div id="userProfile" style="display: none;">
-        <button onclick="openM('profileModal')" style="background:none; border:none; cursor:pointer; font-size:1.5rem;">👤</button>
+    <div class="logo" onclick="location.reload()">خيراتنا</div>
+    <div class="nav-controls">
+        <button class="nav-btn btn-main" onclick="window.toggleCart()">🛒 <span id="cartCount">0</span></button>
+        <div id="authArea">
+            <button class="nav-btn btn-sec" onclick="window.openModal('authModal')">دخول / تسجيل</button>
+        </div>
+        <div id="userArea" style="display: none;">
+            <button class="nav-btn btn-sec" onclick="window.openModal('profileModal')">👤 البروفايل</button>
+        </div>
     </div>
 </header>
 
-<div id="authModal" class="modal">
+<div id="floatingAddBtn" onclick="window.openModal('addProdModal')" title="إضافة منتج جديد">＋</div>
+
+<div class="grid" id="productsGrid"></div>
+
+<div id="addProdModal" class="modal">
     <div class="modal-content">
-        <div class="auth-tabs">
-            <div id="tabL" class="tab active" onclick="switchAuth('login')">تسجيل دخول</div>
-            <div id="tabR" class="tab" onclick="switchAuth('reg')">حساب جديد</div>
-        </div>
-
-        <div id="regFields" style="display: none;">
-            <input type="text" id="regName" placeholder="الاسم الكامل">
-            <select id="regRole">
-                <option value="user">أنا زبون</option>
-                <option value="seller">أنا بائع (أسرة منتجة)</option>
-            </select>
-        </div>
-
-        <input type="email" id="authEmail" placeholder="البريد الإلكتروني">
-        <input type="password" id="authPass" placeholder="كلمة المرور"> <button class="btn-block" onclick="handleAuth()">استمرار</button>
-        <p onclick="closeM('authModal')" style="text-align:center; margin-top:15px; cursor:pointer; color:#999;">إلغاء</p>
+        <span class="close" onclick="window.closeModal('addProdModal')">×</span>
+        <h2 style="margin-bottom: 20px; text-align: center;">إضافة منتج جديد 📦</h2>
+        <input type="text" id="apName" placeholder="اسم المنتج (مثال: ورق عنب، فستان مطرز)">
+        <textarea id="apDesc" placeholder="وصف قصير للمنتج" rows="2"></textarea>
+        <input type="number" id="apPrice" placeholder="السعر (ريال)">
+        <input type="text" id="apImg" placeholder="رابط صورة المنتج (URL)">
+        <small style="display:block; margin-bottom:15px; color:#666;">* تأكد من وضع رابط صورة مباشر لينشر المنتج بصورته.</small>
+        <button class="btn-block" onclick="window.saveProduct()">نشر المنتج الآن 🚀</button>
     </div>
 </div>
 
-<div id="floatingAddBtn" onclick="alert('سيفتح نموذج إضافة منتج')">＋</div>
+<div id="prodDetailModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="window.closeModal('prodDetailModal')">×</span>
+        <img id="mImg" src="" style="width:100%; border-radius:15px; height:250px; object-fit:cover;">
+        <h2 id="mTitle" style="margin-top:15px;"></h2>
+        <p id="mSeller" style="color:var(--primary); font-weight:bold; margin-bottom:10px;"></p>
+        <h3 id="mPrice" style="color:var(--accent); font-size:1.5rem; margin-bottom:20px;"></h3>
+        <button class="btn-block" id="modalAddBtn">إضافة للسلة 🛒</button>
+    </div>
+</div>
+
+<div id="cartPanel" class="cart-panel">
+    <h2>السلة 🛒</h2><hr style="margin:15px 0; opacity:0.1;">
+    <div id="cartItemsList"></div>
+    <div style="position: absolute; bottom: 25px; left: 25px; right: 25px;">
+        <h3 id="totalPrice">المجموع: 0 ريال</h3>
+        <button class="btn-block" style="margin-top:15px;" onclick="window.sendWhatsApp()">طلب عبر واتساب ✅</button>
+    </div>
+</div>
+
+<div id="authModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="window.closeModal('authModal')">×</span>
+        <div style="display:flex; gap:10px; margin-bottom:20px; background:#f1f5f9; padding:5px; border-radius:12px;">
+            <div id="tL" style="flex:1; text-align:center; padding:10px; cursor:pointer; border-radius:10px; background:white;" onclick="window.setAuth('login')">دخول</div>
+            <div id="tR" style="flex:1; text-align:center; padding:10px; cursor:pointer; border-radius:10px;" onclick="window.setAuth('reg')">تسجيل جديد</div>
+        </div>
+        <div id="regOnly" style="display:none;">
+            <select id="rRole"><option value="user">أنا زبون (أريد الشراء)</option><option value="seller">أنا بائع (أسرة منتجة)</option></select>
+            <input type="text" id="rName" placeholder="الاسم الكامل أو اسم المتجر">
+        </div>
+        <input type="email" id="email" placeholder="البريد الإلكتروني">
+        <input type="password" id="pass" placeholder="كلمة المرور">
+        <button class="btn-block" onclick="window.processAuth()">استمرار</button>
+    </div>
+</div>
+
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="window.closeModal('profileModal')">×</span>
+        <div style="text-align:center;">
+            <div style="font-size:3.5rem;">👤</div>
+            <h2 id="profName">...</h2>
+            <p id="profRole" style="color:var(--primary); font-weight:bold; margin-top:5px;"></p>
+        </div>
+        <hr style="margin:20px 0; opacity:0.1;">
+        <button class="btn-block" style="background:var(--danger);" onclick="window.logout()">تسجيل خروج</button>
+    </div>
+</div>
 
 <script type="module">
-    import { createClient } from 'https://jspm.dev/@supabase/supabase-js'
-    const supabase = createClient('https://jgmebfsgdwipovwlrqkb.supabase.co', 'sb_publishable_iD-P4dJjZV32-vZldYMZig_VNV2kMHZ')
+import { createClient } from 'https://jspm.dev/@supabase/supabase-js'
+const supabase = createClient(
+    'https://jgmebfsgdwipovwlrqkb.supabase.co',
+    'sb_publishable_iD-P4dJjZV32-vZldYMZig_VNV2kMHZ'
+)
 
-    window.openM = (id) => document.getElementById(id).style.display = 'flex';
-    window.closeM = (id) => document.getElementById(id).style.display = 'none';
+let userObj = null
+let cart = JSON.parse(localStorage.getItem('myCart')) || []
 
-    window.switchAuth = (mode) => {
-        const isReg = mode === 'reg';
-        document.getElementById('regFields').style.display = isReg ? 'block' : 'none';
-        document.getElementById('tabR').classList.toggle('active', isReg);
-        document.getElementById('tabL').classList.toggle('active', !isReg);
-    }
+window.openModal = (id) => document.getElementById(id).style.display = 'flex'
+window.closeModal = (id) => document.getElementById(id).style.display = 'none'
+window.toggleCart = () => document.getElementById('cartPanel').classList.toggle('active')
 
-    window.handleAuth = async () => {
-        const email = document.getElementById('authEmail').value;
-        const pass = document.getElementById('authPass').value;
-        const isReg = document.getElementById('regFields').style.display === 'block';
+window.setAuth = (m) => {
+    const isLogin = m === 'login'
+    document.getElementById('regOnly').style.display = isLogin ? 'none' : 'block'
+    document.getElementById('tL').style.background = isLogin ? 'white' : 'transparent'
+    document.getElementById('tR').style.background = !isLogin ? 'white' : 'transparent'
+}
 
-        if(!email || !pass) return alert("يرجى ملء كافة الخانات");
+window.processAuth = async () => {
+    const email = document.getElementById('email').value.trim()
+    const pass = document.getElementById('pass').value.trim()
+    const isReg = document.getElementById('regOnly').style.display === 'block'
 
-        try {
-            if(isReg) {
-                const name = document.getElementById('regName').value;
-                const role = document.getElementById('regRole').value;
-                const { data, error } = await supabase.auth.signUp({ email, password: pass });
-                if(error) throw error;
-                await supabase.from('profiles').insert([{ id: data.user.id, full_name: name, role: role }]);
-                alert("تم إنشاء الحساب بنجاح! يرجى تسجيل الدخول.");
-                switchAuth('login');
-            } else {
-                const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
-                if(error) throw error;
-                alert("تم الدخول بنجاح!");
-                location.reload(); // تحديث الصفحة لتفعيل حالة المستخدم
+    if (!email || !pass) return alert("يرجى إدخال البريد وكلمة المرور")
+
+    try {
+
+        if (isReg) {
+            const name = document.getElementById('rName').value.trim()
+            const role = document.getElementById('rRole').value
+
+            if (!name) return alert("يرجى إدخال الاسم الكامل أو اسم المتجر")
+
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password: pass
+            })
+
+            if (error) throw error
+
+            if (data.user) {
+                await supabase.from('profiles').insert([{
+                    id: data.user.id,
+                    full_name: name,
+                    role: role
+                }])
             }
-        } catch (err) { alert("خطأ: " + err.message); }
-    }
 
-    // التحقق من حالة المستخدم عند تحميل الصفحة
-    async function checkUser() {
-        const { data: { user } } = await supabase.auth.getUser();
-        if(user) {
-            document.getElementById('navActions').style.display = 'none';
-            document.getElementById('userProfile').style.display = 'block';
-            
-            // جلب بيانات البروفايل لمعرفة هل هو بائع
-            const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
-            if(profile?.role === 'seller') {
-                document.getElementById('floatingAddBtn').style.display = 'flex';
-            }
+            alert("تم إنشاء الحساب بنجاح ✅")
+            window.setAuth('login')
+
+        } else {
+
+            const { error } = await supabase.auth.signInWithPassword({
+                email,
+                password: pass
+            })
+
+            if (error) throw error
+
+            alert("تم تسجيل الدخول 🎉")
+            window.closeModal('authModal')
         }
+
+    } catch (e) {
+        alert("خطأ: " + e.message)
     }
-    checkUser();
+}
+
+window.logout = async () => {
+    await supabase.auth.signOut()
+}
+
+async function updateUI(user) {
+
+    if (!user) {
+        userObj = null
+        document.getElementById('authArea').style.display = 'block'
+        document.getElementById('userArea').style.display = 'none'
+        document.getElementById('floatingAddBtn').style.display = 'none'
+        return
+    }
+
+    const { data: p } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single()
+
+    if (!p) return
+
+    userObj = p
+
+    document.getElementById('authArea').style.display = 'none'
+    document.getElementById('userArea').style.display = 'block'
+    document.getElementById('profName').innerText = p.full_name
+    document.getElementById('profRole').innerText =
+        p.role === 'seller' ? 'بائع (أسرة منتجة)' : 'زبون'
+
+    if (p.role === 'seller') {
+        document.getElementById('floatingAddBtn').style.display = 'flex'
+    }
+}
+
+supabase.auth.onAuthStateChange((event, session) => {
+    updateUI(session?.user || null)
+})
+
+async function init() {
+    const { data: { user } } = await supabase.auth.getUser()
+    updateUI(user)
+    loadProducts()
+    updateCartUI()
+}
+
+async function loadProducts() {
+    const { data } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+    const grid = document.getElementById('productsGrid')
+    grid.innerHTML = ''
+
+    data?.forEach(p => {
+        const card = document.createElement('div')
+        card.className = 'card'
+        card.innerHTML = `
+            <img src="${p.image_url}" class="card-img"
+            onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+            <div class="card-content">
+                <span style="color:var(--primary); font-size:0.8rem; font-weight:bold;">
+                أسرة: ${p.seller_name || ''}
+                </span>
+                <h3 style="margin:5px 0">${p.name}</h3>
+                <strong style="color:var(--accent)">${p.price} ريال</strong>
+            </div>`
+        card.onclick = () => window.openDetails(p)
+        grid.appendChild(card)
+    })
+}
+
+window.saveProduct = async () => {
+
+    if (!userObj || userObj.role !== 'seller')
+        return alert("فقط البائع يمكنه إضافة منتجات")
+
+    const n = document.getElementById('apName').value.trim()
+    const p = document.getElementById('apPrice').value.trim()
+    const i = document.getElementById('apImg').value.trim()
+
+    if (!n || !p || !i)
+        return alert("الرجاء إكمال جميع بيانات المنتج")
+
+    const { error } = await supabase.from('products').insert([{
+        name: n,
+        price: p,
+        image_url: i,
+        seller_name: userObj.full_name
+    }])
+
+    if (error) alert(error.message)
+    else {
+        alert("تم نشر المنتج 🚀")
+        window.closeModal('addProdModal')
+        loadProducts()
+    }
+}
+
+window.openDetails = (p) => {
+    document.getElementById('mImg').src = p.image_url
+    document.getElementById('mTitle').innerText = p.name
+    document.getElementById('mSeller').innerText =
+        "بأنامل أسرة: " + (p.seller_name || '')
+    document.getElementById('mPrice').innerText = p.price + " ريال"
+
+    document.getElementById('modalAddBtn').onclick = () => {
+        window.addToCart(p)
+        window.closeModal('prodDetailModal')
+    }
+
+    window.openModal('prodDetailModal')
+}
+
+window.addToCart = (item) => {
+    cart.push(item)
+    localStorage.setItem('myCart', JSON.stringify(cart))
+    updateCartUI()
+    window.toggleCart()
+}
+
+function updateCartUI() {
+    document.getElementById('cartCount').innerText = cart.length
+    const list = document.getElementById('cartItemsList')
+    list.innerHTML = ''
+    let total = 0
+
+    cart.forEach(i => {
+        total += parseFloat(i.price)
+        list.innerHTML += `
+        <div style="display:flex; justify-content:space-between;
+        padding:10px 0; border-bottom:1px solid #eee;">
+        <span>${i.name}</span>
+        <strong>${i.price} ر.س</strong>
+        </div>`
+    })
+
+    document.getElementById('totalPrice').innerText =
+        `المجموع: ${total} ريال`
+}
+
+window.sendWhatsApp = () => {
+    if (!userObj) return window.openModal('authModal')
+
+    let msg = `طلب جديد من: ${userObj.full_name}\n`
+    cart.forEach(i => msg += `- ${i.name} (${i.price} ريال)\n`)
+
+    window.open(`https://wa.me/966500000000?text=${encodeURIComponent(msg)}`)
+}
+
+init()
 </script>
+
 </body>
 </html>
