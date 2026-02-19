@@ -3,259 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة خيراتنا | للأسر المنتجة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <title>خيراتنا | النسخة المطورة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --primary-color: #27ae60; 
-            --accent-color: #f39c12; 
-            --bg-color: #f9f9f9; 
-            --text-dark: #2d3436; 
-        }
-
+        :root { --primary: #27ae60; --accent: #f39c12; --bg: #f8fafc; --text: #1e293b; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        html { scroll-behavior: smooth; }
-        body { background-color: var(--bg-color); color: var(--text-dark); overflow-x: hidden; }
+        body { background: var(--bg); padding-top: 90px; }
 
-        /* --- الهيدر --- */
+        /* الهيدر الثابت */
         header {
-            background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(5px);
-            padding: 15px 5%; display: flex; justify-content: space-between;
-            align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background: white; height: 80px; position: fixed; top: 0; width: 100%; 
+            z-index: 9999; display: flex; justify-content: space-between; align-items: center; 
+            padding: 0 5%; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .logo { font-size: 1.6rem; font-weight: bold; color: var(--primary-color); cursor: pointer; }
-        .nav-controls { display: flex; align-items: center; gap: 15px; }
 
-        .btn-header { 
-            padding: 8px 18px; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; 
-            border: 1px solid var(--primary-color);
-        }
-        .login-trigger { background: transparent; color: var(--primary-color); }
-        .cart-trigger { background: var(--primary-color); color: white; border: none; }
-        .btn-header:hover { transform: scale(1.05); opacity: 0.9; }
-
-        /* --- قسم الترحيب Hero --- */
-        .hero {
-            height: 45vh; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1488459711635-de8256a624c5?w=1200');
-            background-size: cover; background-position: center; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; color: white; text-align: center; animation: fadeIn 1s;
-        }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* --- الفلترة --- */
-        #filterBar { display: none; background: #e8f5e9; padding: 12px 5%; text-align: center; color: var(--primary-color); font-weight: bold; }
-
-        /* --- المنتجات --- */
-        .products-section { padding: 40px 5%; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        /* نافذة الدخول المنظمة */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; }
         
-        .card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; }
-        .card:hover { transform: translateY(-10px); }
-        .card-img { height: 220px; width: 100%; object-fit: cover; }
-        .card-body { padding: 20px; }
-        .card-family { color: var(--primary-color); font-weight: bold; font-size: 0.9rem; }
-        .card-price { color: var(--accent-color); font-weight: bold; font-size: 1.2rem; margin-top: 10px; }
+        .auth-tabs { display: flex; gap: 10px; margin-bottom: 20px; background: #f1f5f9; padding: 5px; border-radius: 12px; }
+        .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; border-radius: 10px; font-weight: bold; }
+        .tab.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
-        /* --- النوافذ المنبثقة (Modals) --- */
-        .modal { 
-            display: none; position: fixed; z-index: 2000; top: 0; left: 0; 
-            width: 100%; height: 100%; background: rgba(0,0,0,0.8); 
-            align-items: center; justify-content: center; backdrop-filter: blur(8px); 
-        }
-        .modal-content { 
-            background: white; width: 90%; max-width: 500px; border-radius: 25px; 
-            padding: 30px; animation: slideUp 0.4s ease-out; position: relative; 
-        }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .close-btn { position: absolute; top: 15px; left: 15px; font-size: 1.5rem; cursor: pointer; color: #999; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px; border: 2px solid #eee; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); }
+        .btn-block { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem; }
         
-        .seller-box { background: #f0fdf4; padding: 12px; border-radius: 12px; margin: 15px 0; border: 1px dashed var(--primary-color); }
-        .visit-seller { color: var(--primary-color); font-weight: bold; text-decoration: underline; cursor: pointer; display: block; margin-top: 5px; }
-
-        /* --- السلة --- */
-        .cart-panel { 
-            display: none; position: fixed; top: 0; left: 0; width: 320px; height: 100%; 
-            background: white; z-index: 3000; box-shadow: 5px 0 20px rgba(0,0,0,0.2); 
-            padding: 30px; animation: slideIn 0.3s; 
+        /* الزر العائم للبائع */
+        #floatingAddBtn {
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; 
+            background: var(--accent); color: white; border-radius: 50%; 
+            display: none; align-items: center; justify-content: center; font-size: 1.5rem;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 9000;
         }
-        @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
-        .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
-
-        /* --- أزرار الأكشن --- */
-        .btn-action { background: var(--primary-color); color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1.1rem; margin-top: 10px; }
-        .btn-wa { background: var(--accent-color); }
-
-        /* --- فورم الدخول --- */
-        .auth-tabs { display: flex; border-bottom: 2px solid #eee; margin-bottom: 20px; }
-        .tab { flex: 1; padding: 10px; cursor: pointer; font-weight: bold; color: #999; text-align: center; }
-        .tab.active { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); }
-        .auth-input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; outline: none; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo" onclick="resetFilter()">خيراتنا</div>
-    <div class="nav-controls">
-        <button class="btn-header login-trigger" onclick="toggleAuthModal()">دخول / تسجيل</button>
-        <button class="btn-header cart-trigger" id="cartLabel" onclick="toggleCart()">🛒 (0)</button>
+    <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">خيراتنا 🌿</div>
+    <div id="navActions">
+        <button class="btn-block" style="padding: 8px 20px;" onclick="openM('authModal')">دخول / تسجيل</button>
+    </div>
+    <div id="userProfile" style="display: none;">
+        <button onclick="openM('profileModal')" style="background:none; border:none; cursor:pointer; font-size:1.5rem;">👤</button>
     </div>
 </header>
 
-<div id="filterBar">
-    أنت تتصفح منتجات: <span id="sellerNameLabel"></span> 
-    <button onclick="resetFilter()" style="margin-right:10px; color:red; cursor:pointer; background:none; border:none; font-weight:bold;">[إلغاء الفلترة]</button>
-</div>
-
-<section class="hero">
-    <h1>دعمك يصنع الفرق</h1>
-    <p>بساطة في التسوق، جودة في المنزل</p>
-</section>
-
-<section class="products-section">
-    <div class="products-grid" id="mainGrid">
-        <div class="card" data-seller="مطبخ نورة" onclick="openProduct('ورق عنب حامض', 'مطبخ نورة', 'ورق عنب طازج يُحضر بالليمون وزيت الزيتون الأصلي، يذوب في الفم.', 55, 'https://images.unsplash.com/photo-1541014741259-de529411b96a?w=400')">
-            <img src="https://images.unsplash.com/photo-1541014741259-de529411b96a?w=400" class="card-img">
-            <div class="card-body">
-                <span class="card-family">مطبخ نورة</span>
-                <h3>ورق عنب حامض</h3>
-                <div class="card-price">55 ريال</div>
-            </div>
-        </div>
-        <div class="card" data-seller="خيوط الجنوب" onclick="openProduct('كروشيه يدوي', 'خيوط الجنوب', 'دمية كروشيه مصنوعة يدوياً بخيوط قطنية آمنة للأطفال.', 90, 'https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=400')">
-            <img src="https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=400" class="card-img">
-            <div class="card-body">
-                <span class="card-family">خيوط الجنوب</span>
-                <h3>دمية كروشيه</h3>
-                <div class="card-price">90 ريال</div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<div id="productModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeModal('productModal')">✕</span>
-        <img id="mImg" src="" style="width:100%; border-radius:15px; height:200px; object-fit:cover;">
-        <h2 id="mTitle" style="margin-top:15px;"></h2>
-        <div class="seller-box">
-            <span>البائع: </span><strong id="mSeller"></strong>
-            <span class="visit-seller" id="mVisitLink">تصفح كافة منتجات هذه الأسرة ←</span>
-        </div>
-        <p id="mDesc" style="color:#666;"></p>
-        <h3 id="mPrice" style="color:var(--accent-color); margin:10px 0;"></h3>
-        <button class="btn-action" id="addBtn">إضافة للسلة</button>
-    </div>
-</div>
-
 <div id="authModal" class="modal">
-    <div class="modal-content" style="max-width:400px;">
-        <span class="close-btn" onclick="closeModal('authModal')">✕</span>
+    <div class="modal-content">
         <div class="auth-tabs">
-            <div id="tLogin" class="tab active" onclick="switchAuth('login')">دخول</div>
-            <div id="tReg" class="tab" onclick="switchAuth('reg')">حساب جديد</div>
+            <div id="tabL" class="tab active" onclick="switchAuth('login')">تسجيل دخول</div>
+            <div id="tabR" class="tab" onclick="switchAuth('reg')">حساب جديد</div>
         </div>
-        <div id="loginForm">
-            <input type="email" class="auth-input" placeholder="البريد الإلكتروني">
-            <input type="password" class="auth-input" placeholder="كلمة المرور">
-            <button class="btn-action">دخول</button>
-        </div>
-        <div id="regForm" style="display:none;">
-            <input type="text" class="auth-input" placeholder="الأسم الكامل">
-            <input type="email" class="auth-input" placeholder="البريد الإلكتروني">
-            <select class="auth-input">
-                <option>أنا زبون</option>
-                <option>أنا أسرة منتجة</option>
+
+        <div id="regFields" style="display: none;">
+            <input type="text" id="regName" placeholder="الاسم الكامل">
+            <select id="regRole">
+                <option value="user">أنا زبون</option>
+                <option value="seller">أنا بائع (أسرة منتجة)</option>
             </select>
-            <button class="btn-action">إنشاء الحساب</button>
         </div>
+
+        <input type="email" id="authEmail" placeholder="البريد الإلكتروني">
+        <input type="password" id="authPass" placeholder="كلمة المرور"> <button class="btn-block" onclick="handleAuth()">استمرار</button>
+        <p onclick="closeM('authModal')" style="text-align:center; margin-top:15px; cursor:pointer; color:#999;">إلغاء</p>
     </div>
 </div>
 
-<div id="cartPanel" class="cart-panel">
-    <span onclick="toggleCart()" style="cursor:pointer; color:red; font-weight:bold;">إغلاق ✕</span>
-    <h2 style="margin:20px 0;">مشترياتك</h2>
-    <div id="cartItems"></div>
-    <div style="margin-top:30px; border-top:2px solid #eee; padding-top:15px;">
-        <h3>المجموع: <span id="cartTotal">0</span> ريال</h3>
-        <button class="btn-action btn-wa" onclick="checkoutWA()">إرسال الطلب عبر واتساب</button>
-    </div>
-</div>
+<div id="floatingAddBtn" onclick="alert('سيفتح نموذج إضافة منتج')">＋</div>
 
-<script>
-    let cart = [];
+<script type="module">
+    import { createClient } from 'https://jspm.dev/@supabase/supabase-js'
+    const supabase = createClient('https://jgmebfsgdwipovwlrqkb.supabase.co', 'sb_publishable_iD-P4dJjZV32-vZldYMZig_VNV2kMHZ')
 
-    function openProduct(title, seller, desc, price, img) {
-        document.getElementById('mTitle').innerText = title;
-        document.getElementById('mSeller').innerText = seller;
-        document.getElementById('mDesc').innerText = desc;
-        document.getElementById('mPrice').innerText = price + " ريال";
-        document.getElementById('mImg').src = img;
-        
-        document.getElementById('mVisitLink').onclick = () => { filterSeller(seller); closeModal('productModal'); };
-        document.getElementById('addBtn').onclick = () => { addToCart(title, price); closeModal('productModal'); };
-        
-        document.getElementById('productModal').style.display = 'flex';
+    window.openM = (id) => document.getElementById(id).style.display = 'flex';
+    window.closeM = (id) => document.getElementById(id).style.display = 'none';
+
+    window.switchAuth = (mode) => {
+        const isReg = mode === 'reg';
+        document.getElementById('regFields').style.display = isReg ? 'block' : 'none';
+        document.getElementById('tabR').classList.toggle('active', isReg);
+        document.getElementById('tabL').classList.toggle('active', !isReg);
     }
 
-    function addToCart(title, price) {
-        cart.push({title, price});
-        updateCart();
+    window.handleAuth = async () => {
+        const email = document.getElementById('authEmail').value;
+        const pass = document.getElementById('authPass').value;
+        const isReg = document.getElementById('regFields').style.display === 'block';
+
+        if(!email || !pass) return alert("يرجى ملء كافة الخانات");
+
+        try {
+            if(isReg) {
+                const name = document.getElementById('regName').value;
+                const role = document.getElementById('regRole').value;
+                const { data, error } = await supabase.auth.signUp({ email, password: pass });
+                if(error) throw error;
+                await supabase.from('profiles').insert([{ id: data.user.id, full_name: name, role: role }]);
+                alert("تم إنشاء الحساب بنجاح! يرجى تسجيل الدخول.");
+                switchAuth('login');
+            } else {
+                const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+                if(error) throw error;
+                alert("تم الدخول بنجاح!");
+                location.reload(); // تحديث الصفحة لتفعيل حالة المستخدم
+            }
+        } catch (err) { alert("خطأ: " + err.message); }
     }
 
-    function updateCart() {
-        const list = document.getElementById('cartItems');
-        list.innerHTML = '';
-        let total = 0;
-        cart.forEach(item => {
-            total += item.price;
-            list.innerHTML += `<div class="cart-item"><span>${item.title}</span><strong>${item.price} ريال</strong></div>`;
-        });
-        document.getElementById('cartTotal').innerText = total;
-        document.getElementById('cartLabel').innerText = `🛒 (${cart.length})`;
+    // التحقق من حالة المستخدم عند تحميل الصفحة
+    async function checkUser() {
+        const { data: { user } } = await supabase.auth.getUser();
+        if(user) {
+            document.getElementById('navActions').style.display = 'none';
+            document.getElementById('userProfile').style.display = 'block';
+            
+            // جلب بيانات البروفايل لمعرفة هل هو بائع
+            const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+            if(profile?.role === 'seller') {
+                document.getElementById('floatingAddBtn').style.display = 'flex';
+            }
+        }
     }
-
-    function toggleCart() {
-        const p = document.getElementById('cartPanel');
-        p.style.display = (p.style.display === 'block') ? 'none' : 'block';
-    }
-
-    function filterSeller(name) {
-        document.querySelectorAll('.card').forEach(c => {
-            c.style.display = (c.getAttribute('data-seller') === name) ? 'block' : 'none';
-        });
-        document.getElementById('filterBar').style.display = 'block';
-        document.getElementById('sellerNameLabel').innerText = name;
-        window.scrollTo({top:0, behavior:'smooth'});
-    }
-
-    function resetFilter() {
-        document.querySelectorAll('.card').forEach(c => c.style.display = 'block');
-        document.getElementById('filterBar').style.display = 'none';
-    }
-
-    function toggleAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-    function switchAuth(type) {
-        document.getElementById('loginForm').style.display = (type === 'login') ? 'block' : 'none';
-        document.getElementById('regForm').style.display = (type === 'reg') ? 'block' : 'none';
-        document.getElementById('tLogin').classList.toggle('active', type === 'login');
-        document.getElementById('tReg').classList.toggle('active', type === 'reg');
-    }
-
-    function checkoutWA() {
-        if(cart.length === 0) return alert("السلة فارغة");
-        let msg = "طلب جديد:\n";
-        cart.forEach(i => msg += `- ${i.title}: ${i.price} ريال\n`);
-        msg += `\nالمجموع: ${document.getElementById('cartTotal').innerText} ريال`;
-        window.open(`https://wa.me/966500000000?text=${encodeURIComponent(msg)}`);
-    }
-
-    window.onclick = (e) => { 
-        if(e.target.className === 'modal') { e.target.style.display = 'none'; }
-    }
+    checkUser();
 </script>
-
 </body>
 </html>
