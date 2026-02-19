@@ -1,260 +1,260 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Keyboard Converter</title>
-<meta name="description" content="محول لوحة المفاتيح العربي ↔ الإنجليزي لتصحيح الكتابة الخاطئة وتحويل النصوص بسرعة وسهولة.">
-<meta name="keywords" content="محول كيبورد, keyboard converter, عربي انجليزي, اصلاح الكتابة, نصوص">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة خيراتنا | للأسر المنتجة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary-color: #27ae60; 
+            --accent-color: #f39c12; 
+            --bg-color: #f9f9f9; 
+            --text-dark: #2d3436; 
+        }
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:"Segoe UI",Tahoma,sans-serif;
-}
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background-color: var(--bg-color); color: var(--text-dark); overflow-x: hidden; }
 
-body{
-    background:#0d0d0d;
-    color:#fff;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-}
+        /* --- الهيدر --- */
+        header {
+            background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(5px);
+            padding: 15px 5%; display: flex; justify-content: space-between;
+            align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .logo { font-size: 1.6rem; font-weight: bold; color: var(--primary-color); cursor: pointer; }
+        .nav-controls { display: flex; align-items: center; gap: 15px; }
 
-.container{
-    width:95%;
-    max-width:750px;
-}
+        .btn-header { 
+            padding: 8px 18px; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; 
+            border: 1px solid var(--primary-color);
+        }
+        .login-trigger { background: transparent; color: var(--primary-color); }
+        .cart-trigger { background: var(--primary-color); color: white; border: none; }
+        .btn-header:hover { transform: scale(1.05); opacity: 0.9; }
 
-.card{
-    background:#111;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 0 40px rgba(255,255,255,0.05);
-}
+        /* --- قسم الترحيب Hero --- */
+        .hero {
+            height: 45vh; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1488459711635-de8256a624c5?w=1200');
+            background-size: cover; background-position: center; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; color: white; text-align: center; animation: fadeIn 1s;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-.top-bar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:15px;
-}
+        /* --- الفلترة --- */
+        #filterBar { display: none; background: #e8f5e9; padding: 12px 5%; text-align: center; color: var(--primary-color); font-weight: bold; }
 
-h1{
-    font-size:20px;
-}
+        /* --- المنتجات --- */
+        .products-section { padding: 40px 5%; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        
+        .card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; }
+        .card:hover { transform: translateY(-10px); }
+        .card-img { height: 220px; width: 100%; object-fit: cover; }
+        .card-body { padding: 20px; }
+        .card-family { color: var(--primary-color); font-weight: bold; font-size: 0.9rem; }
+        .card-price { color: var(--accent-color); font-weight: bold; font-size: 1.2rem; margin-top: 10px; }
 
-.lang-toggle{
-    background:#222;
-    border:1px solid #444;
-    color:#fff;
-    padding:6px 12px;
-    border-radius:8px;
-    cursor:pointer;
-}
+        /* --- النوافذ المنبثقة (Modals) --- */
+        .modal { 
+            display: none; position: fixed; z-index: 2000; top: 0; left: 0; 
+            width: 100%; height: 100%; background: rgba(0,0,0,0.8); 
+            align-items: center; justify-content: center; backdrop-filter: blur(8px); 
+        }
+        .modal-content { 
+            background: white; width: 90%; max-width: 500px; border-radius: 25px; 
+            padding: 30px; animation: slideUp 0.4s ease-out; position: relative; 
+        }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .close-btn { position: absolute; top: 15px; left: 15px; font-size: 1.5rem; cursor: pointer; color: #999; }
+        
+        .seller-box { background: #f0fdf4; padding: 12px; border-radius: 12px; margin: 15px 0; border: 1px dashed var(--primary-color); }
+        .visit-seller { color: var(--primary-color); font-weight: bold; text-decoration: underline; cursor: pointer; display: block; margin-top: 5px; }
 
-#toolDescription{
-    margin-top:10px;
-    font-size:14px;
-    color:#ccc;
-    line-height:1.5;
-}
+        /* --- السلة --- */
+        .cart-panel { 
+            display: none; position: fixed; top: 0; left: 0; width: 320px; height: 100%; 
+            background: white; z-index: 3000; box-shadow: 5px 0 20px rgba(0,0,0,0.2); 
+            padding: 30px; animation: slideIn 0.3s; 
+        }
+        @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+        .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
 
-textarea{
-    width:100%;
-    height:150px;
-    background:#000;
-    border:1px solid #333;
-    color:#fff;
-    padding:15px;
-    border-radius:12px;
-    font-size:16px;
-    resize:none;
-}
+        /* --- أزرار الأكشن --- */
+        .btn-action { background: var(--primary-color); color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1.1rem; margin-top: 10px; }
+        .btn-wa { background: var(--accent-color); }
 
-textarea:focus{
-    outline:none;
-    border-color:#fff;
-}
-
-.output{
-    margin-top:20px;
-    background:#000;
-    padding:15px;
-    border-radius:12px;
-    border:1px solid #333;
-    min-height:80px;
-    word-wrap:break-word;
-}
-
-.buttons{
-    display:flex;
-    gap:10px;
-    margin-top:15px;
-}
-
-button{
-    flex:1;
-    padding:12px;
-    border:none;
-    border-radius:12px;
-    background:#fff;
-    color:#000;
-    font-weight:600;
-    cursor:pointer;
-}
-
-button:hover{
-    background:#d9d9d9;
-}
-
-.copy-btn{
-    margin-top:10px;
-    background:#222;
-    color:#fff;
-    border:1px solid #444;
-}
-
-.copy-btn:hover{
-    background:#333;
-}
-
-.footer{
-    text-align:center;
-    margin-top:20px;
-    font-size:13px;
-    opacity:0.7;
-}
-</style>
+        /* --- فورم الدخول --- */
+        .auth-tabs { display: flex; border-bottom: 2px solid #eee; margin-bottom: 20px; }
+        .tab { flex: 1; padding: 10px; cursor: pointer; font-weight: bold; color: #999; text-align: center; }
+        .tab.active { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); }
+        .auth-input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; outline: none; }
+    </style>
 </head>
 <body>
 
-<div class="container">
-<div class="card">
+<header>
+    <div class="logo" onclick="resetFilter()">خيراتنا</div>
+    <div class="nav-controls">
+        <button class="btn-header login-trigger" onclick="toggleAuthModal()">دخول / تسجيل</button>
+        <button class="btn-header cart-trigger" id="cartLabel" onclick="toggleCart()">🛒 (0)</button>
+    </div>
+</header>
 
-<div class="top-bar">
-    <h1 id="title">🔁 محول الكيبورد</h1>
-    <button class="lang-toggle" onclick="toggleLanguage()" id="langToggle">English</button>
+<div id="filterBar">
+    أنت تتصفح منتجات: <span id="sellerNameLabel"></span> 
+    <button onclick="resetFilter()" style="margin-right:10px; color:red; cursor:pointer; background:none; border:none; font-weight:bold;">[إلغاء الفلترة]</button>
 </div>
 
-<!-- وصف الأداة -->
-<p id="toolDescription">
-اكتب نصك هنا وسيقوم المحول بتحويل الكتابة بين لوحة المفاتيح العربية والإنجليزية بسرعة ودقة. يمكنك تصحيح الكتابة الخاطئة أو تحويل النصوص بين اللغتين بسهولة.
-</p>
+<section class="hero">
+    <h1>دعمك يصنع الفرق</h1>
+    <p>بساطة في التسوق، جودة في المنزل</p>
+</section>
 
-<textarea id="inputText" placeholder="اكتب النص هنا..." oninput="autoConvert()"></textarea>
+<section class="products-section">
+    <div class="products-grid" id="mainGrid">
+        <div class="card" data-seller="مطبخ نورة" onclick="openProduct('ورق عنب حامض', 'مطبخ نورة', 'ورق عنب طازج يُحضر بالليمون وزيت الزيتون الأصلي، يذوب في الفم.', 55, 'https://images.unsplash.com/photo-1541014741259-de529411b96a?w=400')">
+            <img src="https://images.unsplash.com/photo-1541014741259-de529411b96a?w=400" class="card-img">
+            <div class="card-body">
+                <span class="card-family">مطبخ نورة</span>
+                <h3>ورق عنب حامض</h3>
+                <div class="card-price">55 ريال</div>
+            </div>
+        </div>
+        <div class="card" data-seller="خيوط الجنوب" onclick="openProduct('كروشيه يدوي', 'خيوط الجنوب', 'دمية كروشيه مصنوعة يدوياً بخيوط قطنية آمنة للأطفال.', 90, 'https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=400')">
+            <img src="https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=400" class="card-img">
+            <div class="card-body">
+                <span class="card-family">خيوط الجنوب</span>
+                <h3>دمية كروشيه</h3>
+                <div class="card-price">90 ريال</div>
+            </div>
+        </div>
+    </div>
+</section>
 
-<div class="buttons">
-    <button id="toArabicBtn" onclick="convertToArabic()">إنجليزي ➜ عربي</button>
-    <button id="toEnglishBtn" onclick="convertToEnglish()">عربي ➜ إنجليزي</button>
+<div id="productModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('productModal')">✕</span>
+        <img id="mImg" src="" style="width:100%; border-radius:15px; height:200px; object-fit:cover;">
+        <h2 id="mTitle" style="margin-top:15px;"></h2>
+        <div class="seller-box">
+            <span>البائع: </span><strong id="mSeller"></strong>
+            <span class="visit-seller" id="mVisitLink">تصفح كافة منتجات هذه الأسرة ←</span>
+        </div>
+        <p id="mDesc" style="color:#666;"></p>
+        <h3 id="mPrice" style="color:var(--accent-color); margin:10px 0;"></h3>
+        <button class="btn-action" id="addBtn">إضافة للسلة</button>
+    </div>
 </div>
 
-<div class="output" id="outputText"></div>
-
-<div class="buttons">
-    <button id="copyBtn" class="copy-btn" onclick="copyText()">📋 نسخ النتيجة</button>
+<div id="authModal" class="modal">
+    <div class="modal-content" style="max-width:400px;">
+        <span class="close-btn" onclick="closeModal('authModal')">✕</span>
+        <div class="auth-tabs">
+            <div id="tLogin" class="tab active" onclick="switchAuth('login')">دخول</div>
+            <div id="tReg" class="tab" onclick="switchAuth('reg')">حساب جديد</div>
+        </div>
+        <div id="loginForm">
+            <input type="email" class="auth-input" placeholder="البريد الإلكتروني">
+            <input type="password" class="auth-input" placeholder="كلمة المرور">
+            <button class="btn-action">دخول</button>
+        </div>
+        <div id="regForm" style="display:none;">
+            <input type="text" class="auth-input" placeholder="الأسم الكامل">
+            <input type="email" class="auth-input" placeholder="البريد الإلكتروني">
+            <select class="auth-input">
+                <option>أنا زبون</option>
+                <option>أنا أسرة منتجة</option>
+            </select>
+            <button class="btn-action">إنشاء الحساب</button>
+        </div>
+    </div>
 </div>
 
-
-
-</div>
+<div id="cartPanel" class="cart-panel">
+    <span onclick="toggleCart()" style="cursor:pointer; color:red; font-weight:bold;">إغلاق ✕</span>
+    <h2 style="margin:20px 0;">مشترياتك</h2>
+    <div id="cartItems"></div>
+    <div style="margin-top:30px; border-top:2px solid #eee; padding-top:15px;">
+        <h3>المجموع: <span id="cartTotal">0</span> ريال</h3>
+        <button class="btn-action btn-wa" onclick="checkoutWA()">إرسال الطلب عبر واتساب</button>
+    </div>
 </div>
 
 <script>
-let currentLang="ar";
+    let cart = [];
 
-const translations={
-ar:{
-title:"🔁 محول الكيبورد",
-placeholder:"اكتب النص هنا...",
-toArabic:"إنجليزي ➜ عربي",
-toEnglish:"عربي ➜ إنجليزي",
-copy:"📋 نسخ النتيجة",
-toggle:"English",
-description:"اكتب نصك هنا وسيقوم المحول بتحويل الكتابة بين لوحة المفاتيح العربية والإنجليزية بسرعة ودقة. يمكنك تصحيح الكتابة الخاطئة أو تحويل النصوص بين اللغتين بسهولة.",
-visits:"عدد الزيارات:",
-dir:"rtl",
-lang:"ar"
-},
-en:{
-title:"🔁 Keyboard Converter",
-placeholder:"Type your text here...",
-toArabic:"English ➜ Arabic",
-toEnglish:"Arabic ➜ English",
-copy:"📋 Copy Result",
-toggle:"العربية",
-description:"Type your text and the converter will instantly switch between Arabic and English keyboard layouts. Quickly fix mistyped text or convert between languages with ease.",
-visits:"Visits:",
-dir:"ltr",
-lang:"en"
-}
-};
+    function openProduct(title, seller, desc, price, img) {
+        document.getElementById('mTitle').innerText = title;
+        document.getElementById('mSeller').innerText = seller;
+        document.getElementById('mDesc').innerText = desc;
+        document.getElementById('mPrice').innerText = price + " ريال";
+        document.getElementById('mImg').src = img;
+        
+        document.getElementById('mVisitLink').onclick = () => { filterSeller(seller); closeModal('productModal'); };
+        document.getElementById('addBtn').onclick = () => { addToCart(title, price); closeModal('productModal'); };
+        
+        document.getElementById('productModal').style.display = 'flex';
+    }
 
-function toggleLanguage(){
-currentLang=currentLang==="ar"?"en":"ar";
-const t=translations[currentLang];
+    function addToCart(title, price) {
+        cart.push({title, price});
+        updateCart();
+    }
 
-document.getElementById("title").innerText=t.title;
-document.getElementById("inputText").placeholder=t.placeholder;
-document.getElementById("toArabicBtn").innerText=t.toArabic;
-document.getElementById("toEnglishBtn").innerText=t.toEnglish;
-document.getElementById("copyBtn").innerText=t.copy;
-document.getElementById("toolDescription").innerText=t.description;
-document.getElementById("visitsText").innerText=t.visits;
-document.getElementById("langToggle").innerText=t.toggle;
+    function updateCart() {
+        const list = document.getElementById('cartItems');
+        list.innerHTML = '';
+        let total = 0;
+        cart.forEach(item => {
+            total += item.price;
+            list.innerHTML += `<div class="cart-item"><span>${item.title}</span><strong>${item.price} ريال</strong></div>`;
+        });
+        document.getElementById('cartTotal').innerText = total;
+        document.getElementById('cartLabel').innerText = `🛒 (${cart.length})`;
+    }
 
-document.documentElement.lang=t.lang;
-document.documentElement.dir=t.dir;
-}
+    function toggleCart() {
+        const p = document.getElementById('cartPanel');
+        p.style.display = (p.style.display === 'block') ? 'none' : 'block';
+    }
 
-/* تحويل */
-const enToAr={
-'q':'ض','w':'ص','e':'ث','r':'ق','t':'ف','y':'غ','u':'ع','i':'ه','o':'خ','p':'ح','[':'ج',']':'د',
-'a':'ش','s':'س','d':'ي','f':'ب','g':'ل','h':'ا','j':'ت','k':'ن','l':'م',';':'ك',"'":'ط',
-'z':'ئ','x':'ء','c':'ؤ','v':'ر','b':'لا','n':'ى','m':'ة',',':'و','.':'ز','/':'ظ'
-};
+    function filterSeller(name) {
+        document.querySelectorAll('.card').forEach(c => {
+            c.style.display = (c.getAttribute('data-seller') === name) ? 'block' : 'none';
+        });
+        document.getElementById('filterBar').style.display = 'block';
+        document.getElementById('sellerNameLabel').innerText = name;
+        window.scrollTo({top:0, behavior:'smooth'});
+    }
 
-const arToEn={};
-for(let key in enToAr){
-arToEn[enToAr[key]]=key;
-}
+    function resetFilter() {
+        document.querySelectorAll('.card').forEach(c => c.style.display = 'block');
+        document.getElementById('filterBar').style.display = 'none';
+    }
 
-function convert(text,map){
-let result="";
-for(let char of text){
-result+=map[char]||map[char.toLowerCase()]||char;
-}
-return result;
-}
+    function toggleAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-function convertToArabic(){
-let text=inputText.value;
-outputText.innerText=convert(text,enToAr);
-}
+    function switchAuth(type) {
+        document.getElementById('loginForm').style.display = (type === 'login') ? 'block' : 'none';
+        document.getElementById('regForm').style.display = (type === 'reg') ? 'block' : 'none';
+        document.getElementById('tLogin').classList.toggle('active', type === 'login');
+        document.getElementById('tReg').classList.toggle('active', type === 'reg');
+    }
 
-function convertToEnglish(){
-let text=inputText.value;
-outputText.innerText=convert(text,arToEn);
-}
+    function checkoutWA() {
+        if(cart.length === 0) return alert("السلة فارغة");
+        let msg = "طلب جديد:\n";
+        cart.forEach(i => msg += `- ${i.title}: ${i.price} ريال\n`);
+        msg += `\nالمجموع: ${document.getElementById('cartTotal').innerText} ريال`;
+        window.open(`https://wa.me/966500000000?text=${encodeURIComponent(msg)}`);
+    }
 
-function autoConvert(){
-let text=inputText.value;
-let arabic=/[\u0600-\u06FF]/;
-if(arabic.test(text)){
-outputText.innerText=convert(text,arToEn);
-}else{
-outputText.innerText=convert(text,enToAr);
-}
-}
-
-function copyText(){
-navigator.clipboard.writeText(outputText.innerText);
-}
-
- 
+    window.onclick = (e) => { 
+        if(e.target.className === 'modal') { e.target.style.display = 'none'; }
+    }
 </script>
 
 </body>
