@@ -177,7 +177,6 @@ window.processAuth = async () => {
     if (!email || !pass) return alert("يرجى إدخال البريد وكلمة المرور")
 
     try {
-
         if (isReg) {
             const name = document.getElementById('rName').value.trim()
             const role = document.getElementById('rRole').value
@@ -188,7 +187,6 @@ window.processAuth = async () => {
                 email,
                 password: pass
             })
-
             if (error) throw error
 
             if (data.user) {
@@ -203,12 +201,10 @@ window.processAuth = async () => {
             window.setAuth('login')
 
         } else {
-
             const { error } = await supabase.auth.signInWithPassword({
                 email,
                 password: pass
             })
-
             if (error) throw error
 
             alert("تم تسجيل الدخول 🎉")
@@ -373,6 +369,7 @@ window.sendWhatsApp = () => {
 
 init()
 </script>
+
 
 </body>
 </html>
