@@ -1,66 +1,119 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>خيراتنا | المنصة المتكاملة</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-:root { 
-    --primary: #27ae60; --accent: #f39c12; --bg: #f8fafc; --text: #1e293b; --radius:20px; --shadow:0 10px 30px rgba(0,0,0,0.1);
-}
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif;}
-body{background:var(--bg);color:var(--text);padding-top:90px;min-height:100vh;}
-header{background:white;height:80px;position:fixed;top:0;width:100%;z-index:9999;display:flex;justify-content:space-between;align-items:center;padding:0 5%;box-shadow:0 2px 15px rgba(0,0,0,0.08);border-bottom:1px solid #eee;}
-.logo{font-size:1.8rem;font-weight:800;color:var(--primary);cursor:pointer;}
-.nav-controls{display:flex;gap:12px;align-items:center;}
-.nav-btn{padding:10px 18px;border-radius:12px;border:none;cursor:pointer;font-weight:600;transition:.3s;display:flex;align-items:center;gap:8px;}
-.btn-main{background:var(--primary);color:white;}
-.btn-sec{background:var(--primary-light);color:var(--primary);}
-#floatingAddBtn{position:fixed;bottom:30px;right:30px;width:65px;height:65px;background:var(--accent);color:white;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 5px 20px rgba(243,156,18,0.4);cursor:pointer;z-index:8000;transition:.3s;}
-#floatingAddBtn:hover{transform:scale(1.1);}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:25px;padding:20px 5%;}
-.card{background:white;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:.3s;cursor:pointer;}
-.card:hover{transform:translateY(-8px);}
-.card-img{width:100%;height:200px;object-fit:cover;}
-.card-content{padding:15px;}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;align-items:center;justify-content:center;backdrop-filter:blur(5px);}
-.modal-content{background:white;padding:30px;border-radius:25px;width:90%;max-width:450px;position:relative;}
-.close{position:absolute;top:20px;left:20px;cursor:pointer;font-size:1.5rem;color:#999;}
-.btn-block{width:100%;padding:15px;background:var(--primary);color:white;border:none;border-radius:12px;font-weight:700;cursor:pointer;font-size:1.1rem;margin-bottom:10px;}
-#cartPanel{position:fixed;top:0;left:-350px;width:320px;height:100%;background:white;z-index:9999;padding:25px;transition:.4s;box-shadow:10px 0 30px rgba(0,0,0,0.1);}
-#cartPanel.active{left:0;}
-#welcomeOverlay{display:none;position:fixed;inset:0;background:white;z-index:20000;align-items:center;justify-content:center;font-size:2.5rem;font-weight:900;color:var(--primary);}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خيراتنا | المنصة المتكاملة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary: #27ae60; --primary-light: #e8f5e9; --accent: #f39c12; 
+            --danger: #e74c3c; --bg: #f8fafc; --text: #1e293b;
+            --radius: 20px; --shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        
+        /* تباعد علوي ثابت لضمان عدم اختفاء المحتوى تحت الهيدر */
+        body { background: var(--bg); color: var(--text); padding-top: 100px; min-height: 100vh; }
+
+        /* --- Header (الرأس الثابت) --- */
+        header {
+            background: white; height: 80px; position: fixed; top: 0; left: 0; width: 100%; 
+            z-index: 9999; display: flex; justify-content: space-between; align-items: center; 
+            padding: 0 5%; box-shadow: 0 2px 15px rgba(0,0,0,0.05); border-bottom: 1px solid #eee;
+        }
+        .logo { font-size: 1.8rem; font-weight: 800; color: var(--primary); cursor: pointer; }
+        .nav-controls { display: flex; gap: 10px; align-items: center; }
+        .nav-btn { padding: 10px 18px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; transition: 0.3s; display: flex; align-items: center; gap: 5px; }
+        .btn-main { background: var(--primary); color: white; }
+        .btn-sec { background: var(--primary-light); color: var(--primary); }
+
+        /* --- Products Grid --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; padding: 20px 5%; }
+        .card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: 0.3s; cursor: pointer; border: 1px solid rgba(0,0,0,0.02); }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .card-img { width: 100%; height: 200px; object-fit: cover; }
+        .card-content { padding: 18px; }
+
+        /* --- Modals (النوافذ المنبثقة) --- */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { background: white; padding: 30px; border-radius: 25px; width: 90%; max-width: 420px; position: relative; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .close { position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 1.5rem; color: #999; }
+
+        /* --- Auth Tabs --- */
+        .auth-tabs { display: flex; gap: 10px; margin-bottom: 25px; background: #f1f5f9; padding: 5px; border-radius: 15px; }
+        .tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; border-radius: 10px; font-weight: bold; transition: 0.3s; }
+        .tab.active { background: white; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+        input, select, textarea { width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #ddd; font-size: 1rem; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+        .btn-block { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 15px; font-weight: 700; cursor: pointer; font-size: 1.1rem; }
+        
+        /* الزر العائم للبائع */
+        #floatingAddBtn {
+            position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; 
+            background: var(--accent); color: white; border-radius: 50%; 
+            display: none; align-items: center; justify-content: center; font-size: 2rem;
+            box-shadow: 0 8px 25px rgba(243, 156, 18, 0.4); cursor: pointer; z-index: 9000; transition: 0.3s;
+        }
+        #floatingAddBtn:hover { transform: scale(1.1) rotate(90deg); }
+
+        /* السلة */
+        .cart-panel { position: fixed; top: 0; left: -350px; width: 320px; height: 100%; background: white; z-index: 10000; padding: 25px; transition: 0.4s; box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
+        .cart-panel.active { left: 0; }
+    </style>
 </head>
 <body>
 
-<div id="welcomeOverlay">حياكم الله في خيراتنا! 🌿</div>
-
 <header>
-    <div class="logo" onclick="location.reload()">خيراتنا</div>
+    <div class="logo" onclick="location.reload()">خيراتنا 🌿</div>
     <div class="nav-controls">
         <button class="nav-btn btn-main" onclick="toggleCart()">🛒 <span id="cartCount">0</span></button>
         <div id="authArea">
             <button class="nav-btn btn-sec" onclick="openModal('authModal')">دخول / تسجيل</button>
         </div>
-        <div id="userArea" style="display:none;">
-            <button class="nav-btn btn-sec" onclick="openModal('profileModal')">👤 البروفايل</button>
+        <div id="userArea" style="display: none;">
+            <button class="nav-btn btn-sec" onclick="openModal('profileModal')">👤 حسابي</button>
         </div>
     </div>
 </header>
 
-<div id="floatingAddBtn" onclick="openModal('addProdModal')" title="إضافة منتج جديد">＋</div>
+<div id="floatingAddBtn" onclick="openModal('addProdModal')">＋</div>
 
 <div class="grid" id="productsGrid"></div>
 
-<!-- --- Modal تسجيل Google وApple --- -->
 <div id="authModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('authModal')">×</span>
-        <h2 style="text-align:center;margin-bottom:20px;">الدخول أو التسجيل</h2>
-        <button class="btn-block" onclick="signInProvider('google')">تسجيل بـ Google</button>
-        <button class="btn-block" onclick="signInProvider('apple')">تسجيل بـ Apple</button>
+        <div class="auth-tabs">
+            <div id="tL" class="tab active" onclick="switchAuth('login')">تسجيل دخول</div>
+            <div id="tR" class="tab" onclick="switchAuth('reg')">إنشاء حساب</div>
+        </div>
+        
+        <div id="regFields" style="display: none;">
+            <input type="text" id="rName" placeholder="الاسم الكامل أو اسم المتجر">
+            <select id="rRole">
+                <option value="user">أنا زبون (مشتري)</option>
+                <option value="seller">أنا بائع (أسرة منتجة)</option>
+            </select>
+        </div>
+        
+        <input type="email" id="authEmail" placeholder="البريد الإلكتروني">
+        <input type="password" id="authPass" placeholder="كلمة المرور">
+        
+        <button class="btn-block" onclick="processAuth()">استمرار</button>
+    </div>
+</div>
+
+<div id="addProdModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('addProdModal')">×</span>
+        <h2 style="margin-bottom:20px; text-align:center;">إضافة منتج جديد 📦</h2>
+        <input type="text" id="apName" placeholder="اسم المنتج">
+        <input type="number" id="apPrice" placeholder="السعر (ريال)">
+        <input type="text" id="apImg" placeholder="رابط صورة المنتج (URL)">
+        <button class="btn-block" onclick="saveProduct()">نشر المنتج الآن</button>
     </div>
 </div>
 
@@ -68,93 +121,99 @@ header{background:white;height:80px;position:fixed;top:0;width:100%;z-index:9999
     <div class="modal-content">
         <span class="close" onclick="closeModal('profileModal')">×</span>
         <div style="text-align:center;">
-            <div style="font-size:3.5rem;">👤</div>
+            <div style="font-size:3.5rem; margin-bottom:10px;">👤</div>
             <h2 id="profName">...</h2>
-            <p id="profRole" style="color:var(--primary);font-weight:bold;margin-top:5px;"></p>
+            <p id="profRole" style="color:var(--primary); font-weight:bold;"></p>
         </div>
         <hr style="margin:20px 0; opacity:0.1;">
-        <button class="btn-block" style="background:#e74c3c;" onclick="logout()">تسجيل خروج</button>
+        <button class="btn-block" style="background:var(--danger);" onclick="logout()">تسجيل خروج</button>
     </div>
 </div>
 
 <script type="module">
-import { createClient } from 'https://jspm.dev/@supabase/supabase-js'
-const supabase = createClient('https://jgmebfsgdwipovwlrqkb.supabase.co', 'sb_publishable_iD-P4dJjZV32-vZldYMZig_VNV2kMHZ');
+    import { createClient } from 'https://jspm.dev/@supabase/supabase-js'
+    const supabase = createClient('https://jgmebfsgdwipovwlrqkb.supabase.co', 'sb_publishable_iD-P4dJjZV32-vZldYMZig_VNV2kMHZ');
 
-let userObj = null, cart = JSON.parse(localStorage.getItem('myCart')) || [];
+    let userObj = null, cart = JSON.parse(localStorage.getItem('myCart')) || [];
 
-window.openModal = id => document.getElementById(id).style.display='flex';
-window.closeModal = id => document.getElementById(id).style.display='none';
-window.toggleCart = () => document.getElementById('cartPanel').classList.toggle('active');
+    window.openModal = id => document.getElementById(id).style.display='flex';
+    window.closeModal = id => document.getElementById(id).style.display='none';
+    window.toggleCart = () => document.getElementById('cartPanel').classList.toggle('active');
 
-async function signInProvider(provider){
-    const { error } = await supabase.auth.signInWithOAuth({ provider });
-    if(error) alert(error.message);
-}
+    window.switchAuth = (mode) => {
+        const isReg = mode === 'reg';
+        document.getElementById('regFields').style.display = isReg ? 'block' : 'none';
+        document.getElementById('tL').classList.toggle('active', !isReg);
+        document.getElementById('tR').classList.toggle('active', isReg);
+    };
 
-window.logout = async () => {
-    await supabase.auth.signOut();
-    location.reload();
-};
+    window.processAuth = async () => {
+        const email = document.getElementById('authEmail').value;
+        const pass = document.getElementById('authPass').value;
+        const isReg = document.getElementById('regFields').style.display === 'block';
 
-async function init(){
-    const { data:{ user } } = await supabase.auth.getUser();
-    if(user){
-        const { data:p } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-        if(p){
-            userObj=p;
-            document.getElementById('authArea').style.display='none';
-            document.getElementById('userArea').style.display='block';
-            document.getElementById('profName').innerText=p.full_name;
-            document.getElementById('profRole').innerText=p.role==='seller'?'بائع (أسرة منتجة)':'زبون';
-            if(p.role==='seller') document.getElementById('floatingAddBtn').style.display='flex';
-            if(localStorage.getItem('greetMe')){
-                const ov=document.getElementById('welcomeOverlay');
-                ov.style.display='flex';
-                setTimeout(()=>{ov.style.display='none';localStorage.removeItem('greetMe');},2500);
+        if(!email || !pass) return alert("يرجى ملء كافة الخانات");
+
+        try {
+            if(isReg) {
+                const name = document.getElementById('rName').value;
+                const role = document.getElementById('rRole').value;
+                const { data, error } = await supabase.auth.signUp({ email, password: pass });
+                if(error) throw error;
+                await supabase.from('profiles').insert([{ id: data.user.id, full_name: name, role: role }]);
+                alert("تم إنشاء الحساب! يرجى التحقق من بريدك ثم تسجيل الدخول.");
+            } else {
+                const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+                if(error) throw error;
+                location.reload();
+            }
+        } catch(e) { alert("خطأ: " + e.message); }
+    };
+
+    window.logout = async () => { await supabase.auth.signOut(); location.reload(); };
+
+    async function init() {
+        const { data: { user } } = await supabase.auth.getUser();
+        if(user) {
+            const { data: p } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+            if(p) {
+                userObj = p;
+                document.getElementById('authArea').style.display = 'none';
+                document.getElementById('userArea').style.display = 'block';
+                document.getElementById('profName').innerText = p.full_name;
+                document.getElementById('profRole').innerText = p.role === 'seller' ? 'بائع (أسرة منتجة)' : 'زبون مميز';
+                if(p.role === 'seller') document.getElementById('floatingAddBtn').style.display = 'flex';
             }
         }
+        loadProducts();
     }
-    loadProducts();
-    updateCartUI();
-}
 
-// --- باقي وظائف المنتجات والسلة كما هي ---
-async function loadProducts(){
-    const { data } = await supabase.from('products').select('*').order('created_at',{ascending:false});
-    const grid = document.getElementById('productsGrid');
-    grid.innerHTML='';
-    data?.forEach(p=>{
-        const card=document.createElement('div');
-        card.className='card';
-        card.innerHTML=`
-            <img src="${p.image_url}" class="card-img" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-            <div class="card-content">
-            <span style="color:var(--primary); font-size:0.8rem; font-weight:bold;">أسرة: ${p.seller_name}</span>
-            <h3 style="margin:5px 0">${p.name}</h3>
-            <strong style="color:var(--accent)">${p.price} ريال</strong>
-            </div>`;
-        card.onclick=()=>openDetails(p);
-        grid.appendChild(card);
-    });
-}
+    async function loadProducts() {
+        const { data } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+        const grid = document.getElementById('productsGrid');
+        grid.innerHTML = '';
+        data?.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <img src="${p.image_url}" class="card-img" onerror="this.src='https://via.placeholder.com/300x200?text=Image+Not+Found'">
+                <div class="card-content">
+                    <span style="color:var(--primary); font-size:0.8rem; font-weight:700;">${p.seller_name}</span>
+                    <h3 style="margin:5px 0; font-size:1.1rem;">${p.name}</h3>
+                    <strong style="color:var(--accent); font-size:1.2rem;">${p.price} ريال</strong>
+                </div>`;
+            grid.appendChild(card);
+        });
+    }
 
-window.openDetails = (p)=>{
-    alert(`فتح تفاصيل المنتج: ${p.name}`);
-}
+    window.saveProduct = async () => {
+        const n = document.getElementById('apName').value, p = document.getElementById('apPrice').value, i = document.getElementById('apImg').value;
+        if(!n || !p || !i) return alert("يرجى إكمال بيانات المنتج");
+        const { error } = await supabase.from('products').insert([{ name: n, price: p, image_url: i, seller_name: userObj.full_name }]);
+        if(error) alert(error.message); else location.reload();
+    };
 
-window.addToCart = (item)=>{
-    cart.push(item);
-    localStorage.setItem('myCart',JSON.stringify(cart));
-    updateCartUI();
-    window.toggleCart();
-}
-
-function updateCartUI(){
-    document.getElementById('cartCount').innerText=cart.length;
-}
-
-init();
+    init();
 </script>
 </body>
 </html>
